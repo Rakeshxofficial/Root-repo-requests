@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: telegram-approve-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: sleep 1200 && python bot.py  # 20min delay before first run
