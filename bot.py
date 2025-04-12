@@ -18,7 +18,6 @@ async def safe_start():
         return True
     except errors.FloodWait as e:
         print(f"FATAL: Telegram requires {e.value} seconds wait")
-        print(f"Stop deployment and wait {e.value // 60} minutes")
         return False
     except Exception as e:
         print(f"Authorization failed: {e}")
@@ -30,11 +29,13 @@ async def approve_requests():
             user_id = request.user.id
             await app.approve_chat_join_request(int(os.getenv("CHANNEL_ID")), user_id)
             print(f"Approved: {user_id}")
-            await asyncio.sleep(10)  # Conservative delay
+            await asyncio.sleep(10)
+    except Exception as e:  # Added missing except block
+        print(f"Approval error: {e}")
 
 async def main():
     if not await safe_start():
-        return  # Exit on authorization failure
+        return
     
     try:
         await approve_requests()
